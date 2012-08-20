@@ -1,0 +1,34 @@
+# Visual Studio artifacts
+bin
+obj
+*.user
+*.suo
+*.vsp
+*.csproj.VisualState.xml
+*.vbproj.VisualState.xml
+*.cache
+
+# artifacts
+*.pidb
+*.userprefs
+test-results
+
+# NUnit artifacts
+TestResult.xml
+
+# Resharper artifacts
+_ReSharper.*
+
+# Sandcastle artifacts
+Help
+*.shfbproj_*
+
+# Vim artifacts
+*.swp
+*~
+
+#Nupkg artifacts
+*.nupkg
+
+# NCrunch artifacts
+*.ncrunch*

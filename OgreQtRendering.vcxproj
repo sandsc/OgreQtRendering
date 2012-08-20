@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{12B0AF69-1F67-4802-B077-93CB220FF078}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>OgreQtRendering</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\include;D:\Library\Ogre\OgreMain\include;D:\Library\Ogre\Ms_Build\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>OgreMain_d.lib;qtcored4.lib;qtguid4.lib;qtmaind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Library\Ogre\Ms_Build\lib\Debug\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Library\Ogre\OgreMain\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>OgreMain.lib;qtcore4.lib;qtgui4.lib;qtmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Library\Ogre\Ms_Build\lib\Debug\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="include\View\moc_mainwindow.cxx" />
+    <ClCompile Include="include\View\moc_ogrewidget.cxx" />
+    <ClCompile Include="include\View\moc_qtworkspacelayout.cxx" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Presenter\OgreContext.cpp" />
+    <ClCompile Include="src\presenter\WorkspaceRoot.cpp" />
+    <ClCompile Include="src\View\QtMainRenderView.cpp" />
+    <ClCompile Include="src\View\QtMainWindow.cpp" />
+    <ClCompile Include="src\View\QtOgreWidget.cpp" />
+    <ClCompile Include="src\View\QtWorkspaceWindow.cpp" />
+    <ClCompile Include="src\view\ViewContent.cpp" />
+    <ClCompile Include="src\View\Workspace.cpp" />
+    <ClCompile Include="src\View\WorkspaceLayout.cpp" />
+    <ClCompile Include="src\View\WorkspaceWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Presenter\OgreContext.h" />
+    <ClInclude Include="include\Presenter\WorkspaceRoot.h" />
+    <ClInclude Include="include\sandgis.h" />
+    <ClInclude Include="include\View\QtMainRenderView.h" />
+    <ClInclude Include="include\View\QtWorkspaceLayout.h" />
+    <ClInclude Include="include\View\QtWorkspaceLayout_Fwd.h" />
+    <ClInclude Include="include\View\QtWorkspaceWindow.h" />
+    <ClInclude Include="include\view\RenderView.h" />
+    <ClInclude Include="include\view\ViewContent.h" />
+    <ClInclude Include="include\view\Workspace.h" />
+    <ClInclude Include="include\view\WorkspaceLayout.h" />
+    <ClInclude Include="include\view\WorkspaceWindow.h" />
+    <ClInclude Include="include\View\QtMainWindow.h" />
+    <ClInclude Include="include\View\QtOgreWidget.h" />
+    <ClInclude Include="resources\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\sandgisapp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\qtgis.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

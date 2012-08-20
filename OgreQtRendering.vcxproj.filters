@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Presenter">
+      <UniqueIdentifier>{933986f8-5586-43a0-809a-b821bfeaaffb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\View">
+      <UniqueIdentifier>{c2bc9999-6451-448b-a0f7-a9a7e5c1bcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Presenter">
+      <UniqueIdentifier>{625f0543-b1fc-4d74-bd5f-4f05e57aab27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\View">
+      <UniqueIdentifier>{acd6bcb9-cdf4-4ce3-8e0c-42ffb2c8cddb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\View\moc_mainwindow.cxx">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="include\View\moc_ogrewidget.cxx">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presenter\WorkspaceRoot.cpp">
+      <Filter>Source Files\Presenter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Presenter\OgreContext.cpp">
+      <Filter>Source Files\Presenter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\Workspace.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\ViewContent.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\QtWorkspaceWindow.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\QtMainWindow.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\QtOgreWidget.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\WorkspaceWindow.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\WorkspaceLayout.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="include\View\moc_qtworkspacelayout.cxx">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\QtMainRenderView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resources\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sandgis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Presenter\WorkspaceRoot.h">
+      <Filter>Header Files\Presenter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Presenter\OgreContext.h">
+      <Filter>Header Files\Presenter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\view\RenderView.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\view\ViewContent.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\view\Workspace.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\view\WorkspaceLayout.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\view\WorkspaceWindow.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\View\QtWorkspaceWindow.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\View\QtWorkspaceLayout_Fwd.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\View\QtOgreWidget.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\View\QtMainWindow.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\View\QtWorkspaceLayout.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\View\QtMainRenderView.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\sandgisapp.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\qtgis.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

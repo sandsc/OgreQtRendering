@@ -21,7 +21,7 @@ namespace sandgis
 {
 	///@brief  workspace listener
 	///@autor luoshasha
-	struct WorkspaceListener
+	struct WorkspaceListenevoidr
 	{	
 		/// @brief  virtul dest.
 		virtual ~WorkspaceListener() {}

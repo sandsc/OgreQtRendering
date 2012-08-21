@@ -62,12 +62,12 @@ namespace sandgis
 	//----------------------------------------------------------------------------------------
 	QtOgreWidget::~QtOgreWidget()
 	{
-		/*if(mOgreInitialised)
+		if(mOgreInitialised)
 		{
 			Ogre::Root* root = WorkspaceRoot::instance()->ogreContext()->root();
 			root->removeFrameListener(this);
 			root->getRenderSystem()->removeListener(this);
-		} */   
+		}   
 		destroy();
 		disposed_ = true;
 	}

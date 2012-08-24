@@ -16,10 +16,6 @@
 
 //ogre 
 #include "OgrePrerequisites.h"
-#include "OgreFrameListener.h"
-#include "OgreMeshSerializer.h"
-#include "OgreRenderSystem.h"
-
 #include "view/RenderView.h"
 
 namespace sandgis
@@ -66,14 +62,11 @@ namespace sandgis
 	///@seealso Ogitor website: www.ogitor.org
 	///@autor luoshasha
 	// =------------------------------------------------------------------------------------
-	class QtOgreWidget : public QWidget, 
-		public Ogre::FrameListener,
-		public Ogre::RenderSystem::Listener,
-		public Ogre::MeshSerializerListener
+	class QtOgreWidget : public QWidget, public RenderView
 	{
 		Q_OBJECT;
 	public:
-		QtOgreWidget(MapPresenter* map, QWidget *parent=0, bool doLoadFile = false, Qt::WindowFlags f=0);
+		QtOgreWidget(QWidget *parent=0, Qt::WindowFlags f=0);
 		virtual ~QtOgreWidget();
 
 		///Override QWidget::paintEngine to return NULL
@@ -92,19 +85,22 @@ namespace sandgis
 				mCursorHidden = !bShow;
 			}
 		};
+
 		void setTimerInterval(int value);
+
 		void setOverlayMessage(QString msg)
 		{
 			mOverlayWidget->setMessageString(msg);
-			update();
+			QWidget::update();
 		};
-
-		void setDoLoadFile(bool doLoad = true);
 
 		bool isSizing()
 		{
 			return mScreenResize;
 		}
+
+		///@brief callback method for internal using
+		bool _notifyFrameStarted(const Ogre::FrameEvent& evt);
 
 		///@brief proccess key action invorked by mainwindow
 		///       don't call this method directly
@@ -127,18 +123,11 @@ namespace sandgis
 		// =------------------------------------------------------------------------------------
 		void sceneDestroyed(void);
 
-		//#MeshSerializerListener interface
-		void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name);
-		void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name)
-		{
-
-		}
 		//----------------
 		void stopRendering(bool stop) 
 		{
 			mRenderStop = stop;
 		};
-
 	public Q_SLOTS:
 		void timerLoop();
 		void contextMenu(int id);
@@ -149,7 +138,7 @@ namespace sandgis
 		float mFrameRate;
 		bool  is_scene_loaded_;
 		bool disposed_;
-		MapPresenter* map_presenter_;
+		std::unique_ptr<MapPresenter> map_presenter_;
 		Ogre::RenderWindow *mRenderWindow;
 
 	protected:
@@ -159,7 +148,6 @@ namespace sandgis
 		int           mFrameCounter;
 		double        mTotalFrameTime;
 		bool          mCursorHidden;
-		bool          mDoLoadFile;
 		OverlayWidget *mOverlayWidget;
 
 		// -------------------------------------------------------------------------------------
@@ -185,17 +173,6 @@ namespace sandgis
 		void dragLeaveEvent(QDragLeaveEvent *evt);
 		void dragMoveEvent(QDragMoveEvent *evt);
 		void dropEvent(QDropEvent *evt);
-
-		// -------------------------------------------------------------------------------------
-		/// @brief  eventOccurred rendersystem listener
-		///
-		/// @param eventName event name
-		/// @param parameters event parameters 
-		// =------------------------------------------------------------------------------------
-		void eventOccurred (const Ogre::String &eventName, const Ogre::NameValuePairList *parameters=0);
-
-		///@brief ogre frame listener
-		bool frameStarted(const Ogre::FrameEvent& evt);
 
 		float caculateFPS(float time);
 		/// show objects context menu

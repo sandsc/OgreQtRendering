@@ -63,6 +63,10 @@ namespace OgreBites
 		, mGoingUp(false)
 		, mGoingDown(false)
 		, mFastMove(false)
+		, x_rel_(0)
+		, y_rel_(0)
+		, last_x_(0)
+		, last_y_(0)
 		{
 
 			setCamera(cam);
@@ -269,6 +273,10 @@ namespace OgreBites
 		virtual void injectMouseMove(int button, int x, int y)
 #endif
 		{
+			x_rel_ = x - last_x_;
+			y_rel_ = y - last_y_;
+			last_x_ = x;
+			last_y_ = y;
 			if (mStyle == CS_ORBIT)
 			{
 				Ogre::Real dist = (mCamera->getPosition() - mTarget->_getDerivedPosition()).length();
@@ -277,8 +285,8 @@ namespace OgreBites
 				{
 					mCamera->setPosition(mTarget->_getDerivedPosition());
 
-					mCamera->yaw(Ogre::Degree(-x * 0.25f));
-					mCamera->pitch(Ogre::Degree(-y * 0.25f));
+					mCamera->yaw(Ogre::Degree(-x_rel_ * 0.25f));
+					mCamera->pitch(Ogre::Degree(-y_rel_ * 0.25f));
 
 					mCamera->moveRelative(Ogre::Vector3(0, 0, dist));
 
@@ -287,7 +295,7 @@ namespace OgreBites
 				else if (mZooming)  // move the camera toward or away from the target
 				{
 					// the further the camera is, the faster it moves
-					mCamera->moveRelative(Ogre::Vector3(0, 0, y * 0.004f * dist));
+					mCamera->moveRelative(Ogre::Vector3(0, 0, y_rel_ * 0.004f * dist));
 				}
 				//else if (evt.state.Z.rel != 0)  // move the camera toward or away from the target
 				//{
@@ -297,8 +305,8 @@ namespace OgreBites
 			}
 			else if (mStyle == CS_FREELOOK)
 			{
-				mCamera->yaw(Ogre::Degree(-x * 0.15f));
-				mCamera->pitch(Ogre::Degree(-y * 0.15f));
+				mCamera->yaw(Ogre::Degree(-x_rel_ * 0.15f));
+				mCamera->pitch(Ogre::Degree(-y_rel_ * 0.15f));
 			}
 		}
 
@@ -364,6 +372,11 @@ namespace OgreBites
 		bool mGoingUp;
 		bool mGoingDown;
 		bool mFastMove;
+
+		int x_rel_;
+		int y_rel_;
+		int last_x_;
+		int last_y_;
     };
 }
 

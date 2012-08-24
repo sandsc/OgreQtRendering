@@ -28,19 +28,17 @@ namespace sandgis
 		painter.drawText(QRectF(0,0,width(),height()),msgstr,QTextOption(Qt::AlignVCenter | Qt::AlignHCenter));
 	}
 	//----------------------------------------------------------------------------------------
-	QtOgreWidget::QtOgreWidget(MapPresenter* presenter, QWidget *parent, 
-		bool doLoadFile, 
+	QtOgreWidget::QtOgreWidget(	QWidget *parent, 
 		Qt::WindowFlags f): QWidget( parent,  f /*| Qt::MSWindowsOwnDC*/ ),
 		mRenderWindow(0),
-		map_presenter_(presenter),
+		map_presenter_(new MapPresenter(this)),
 		is_scene_loaded_(false),
 		mOgreInitialised(false),
 		mLastKeyEventTime(0),
 		mRenderStop(false), 
 		mScreenResize(false), 
 		mCursorHidden(false),
-		disposed_(false),
-		mDoLoadFile(doLoadFile)
+		disposed_(false)
 	{
 		mFrameCounter = 0;
 		mTotalFrameTime = 0;
@@ -66,41 +64,10 @@ namespace sandgis
 		if(mOgreInitialised)
 		{
 			Ogre::Root* root = WorkspaceRoot::instance()->ogreContext()->root();
-			root->removeFrameListener(this);
-			root->getRenderSystem()->removeListener(this);
 			root->destroyRenderTarget(mRenderWindow);
 		}   
 		destroy();
 		disposed_ = true;
-	}
-	//----------------------------------------------------------------------------------------
-	static Ogre::Vector3 oldCamPos = Ogre::Vector3::ZERO;
-	static int oldTris = 0;
-
-	bool QtOgreWidget::frameStarted(const Ogre::FrameEvent& evt)
-	{
-		float fps = mRenderWindow->getAverageFPS();//this->caculateFPS(evt.timeSinceLastFrame);
-		WorkspaceRoot::instance()->workspace()->displayFPS(fps);
-
-		const Ogre::Vector3& campos = map_presenter_->activeCamera()->getPosition();
-		if(oldCamPos != campos)
-		{
-			WorkspaceRoot::instance()->workspace()->displayCameraPos(campos.x, campos.y, campos.z);
-			oldCamPos = campos;
-		}
-
-		int tris = mRenderWindow->getTriangleCount();
-		if(oldTris != tris)
-		{
-			WorkspaceRoot::instance()->workspace()->displayTriangleNum(tris);
-			oldTris = tris;
-		}
-		return true;
-	}
-
-	void QtOgreWidget::eventOccurred (const Ogre::String &eventName, const Ogre::NameValuePairList *parameters /*=0*/ )
-	{
-		//rendersystem event listener
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -131,10 +98,6 @@ namespace sandgis
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 		mRenderWindow->resize(width(), height());
 #endif
-		Ogre::Root* proot = WorkspaceRoot::instance()->ogreContext()->root();
-		proot->getRenderSystem()->addListener(this);
-		proot->addFrameListener(this);
-		Ogre::MeshManager::getSingletonPtr()->setListener(this);
 		mOgreInitialised = true;
 
 		//
@@ -305,8 +268,6 @@ namespace sandgis
 		OgreWidgetMouseMovedSincePress = true;
 	}
 
-
-
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::mousePressEvent(QMouseEvent *evt)
 	{
@@ -392,12 +353,7 @@ namespace sandgis
 		}
 		return mFrameRate;
 	}
-	//----------------------------------------------------------------------------------
-	void QtOgreWidget::processMaterialName(Ogre::Mesh *mesh, Ogre::String *name)
-	{
-		//Ogre::NameValuePairList *modelMaterialMap = OgitorsRoot::getSingletonPtr()->GetModelMaterialMap();
-		//modelMaterialMap->insert(Ogre::NameValuePairList::value_type(mesh->getName(), name->c_str()));
-	}
+
 	//-------------------------------------------------------------------------------------------
 	void QtOgreWidget::dragEnterEvent(QDragEnterEvent *evt)
 	{

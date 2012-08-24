@@ -42,7 +42,7 @@ namespace sandgis
 			bool doLoadFile = false,
 			int window_flags=0,
 			bool content_owner = false);
-		~QtMainRenderView(void);
+		virtual ~QtMainRenderView(void);
 
 		Ogre::RenderWindow* renderWindow(void) const;
 

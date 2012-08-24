@@ -23,6 +23,7 @@ namespace Ogre
 	class Camera;
 	class Vector3;
 	class ColourValue;
+	struct FrameEvent;
 }
 
 namespace OgreBites
@@ -39,8 +40,7 @@ class QRectF;
 namespace sandgis
 {
 	class QtMainRenderView;
-	
-	class MapPresenter : Noncopyable
+	class MapPresenter : private Noncopyable
 	{
 	public:
 		typedef QtMainRenderView ViewType;
@@ -65,7 +65,7 @@ namespace sandgis
 		void _onViewClosed(void);
 
 		// -------------------------------------------------------------------------------------
-		/// mouse and key event
+		//view input events
 		// =------------------------------------------------------------------------------------
 		void _onMouseDown(int button, int x, int y);
 		void _onMouseMove(int button, int x, int y);
@@ -75,7 +75,7 @@ namespace sandgis
 		void _onKeyDown(int key);
 		void _onKeyUp(int key);
 
-		//focus event
+		//view focus events
 		void _onViewFocusIn(void);
 		void _onViewFocusOut(void);
 
@@ -122,10 +122,20 @@ namespace sandgis
 		// =------------------------------------------------------------------------------------
 		void dispose(void);
 
+		// -------------------------------------------------------------------------------------
+		//ogre frame events
+		// =------------------------------------------------------------------------------------
+		bool frameStarted(const Ogre::FrameEvent& evt);
+		bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+
 	private:
 		ViewPtr view_;
 		Ogre::SceneManager* scene_;
 		Ogre::Camera* active_camera_;
+
 		OgreBites::SdkCameraMan* camera_man_;
+
+		struct EventListener event_listener_;
+		friend struct EventListener;
 	};
 }

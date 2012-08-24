@@ -87,7 +87,6 @@
     <ClCompile Include="src\Presenter\OgreContext.cpp" />
     <ClCompile Include="src\Presenter\MapPresenter.cpp" />
     <ClCompile Include="src\presenter\WorkspaceRoot.cpp" />
-    <ClCompile Include="src\View\QtMainRenderView.cpp" />
     <ClCompile Include="src\View\QtMainWindow.cpp" />
     <ClCompile Include="src\View\QtOgreWidget.cpp" />
     <ClCompile Include="src\View\QtWorkspaceWindow.cpp" />
@@ -102,7 +101,6 @@
     <ClInclude Include="include\Presenter\SdkCameraMan.h" />
     <ClInclude Include="include\Presenter\WorkspaceRoot.h" />
     <ClInclude Include="include\sandgis.h" />
-    <ClInclude Include="include\View\QtMainRenderView.h" />
     <ClInclude Include="include\View\QtWorkspaceLayout.h" />
     <ClInclude Include="include\View\QtWorkspaceLayout_Fwd.h" />
     <ClInclude Include="include\View\QtWorkspaceWindow.h" />

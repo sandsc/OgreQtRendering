@@ -20,22 +20,61 @@
 #include "presenter/SdkCameraMan.h"
 #include "presenter/OgreContext.h"
 
+#include "OgreFrameListener.h"
+
 using namespace OgreBites;
 using namespace Ogre;
 namespace sandgis
 {
+	struct EventListener : public FrameListener
+	{
+		typedef MapPresenter _OwnerType;
+
+		EventListener(_OwnerType* owner) :
+		 owner_(owner)
+		{
+		}
+
+		bool frameStarted(const FrameEvent& evt)
+		{
+			return owner_->frameStarted(evt);
+		}
+		bool frameRenderingQueued(const FrameEvent& evt)
+		{
+			return owner_->frameRenderingQueued(evt);
+		}
+		_OwnerType* owner_;
+	};
+
+
+
+
 	MapPresenter::MapPresenter(ViewPtr view)
 		: view_(view),
 		camera_man_(0),
-		scene_(0)
+		scene_(0),
+		event_listener_(new EventListener(this))
 	{
-
+		//add frame listener
+		OgreContext* pOgreContext = WorkspaceRoot::instance()->ogreContext();
+		Ogre::Root* root = pOgreContext->root();
+		root->addFrameListener(event_listener_);
 	}
 
 	MapPresenter::~MapPresenter(void)
 	{
 		if (camera_man_)
+		{
 			delete camera_man_;
+			camera_man_ = 0;
+		}
+
+		//remove listener
+		OgreContext* pOgreContext = WorkspaceRoot::instance()->ogreContext();
+		Ogre::Root* root = pOgreContext->root();
+		root->removeFrameListener(event_listener_);
+
+		delete event_listener_;
 	}
 
 	void  MapPresenter::_onViewClosed(void)
@@ -81,6 +120,32 @@ namespace sandgis
 
 	}
 
+	bool MapPresenter::frameStarted(const Ogre::FrameEvent& evt)
+	{
+		if (!view_)
+			return false;
+
+		RenderWindow* render_window = view_->renderWindow();
+
+		float fps = render_window->getAverageFPS();//this->caculateFPS(evt.timeSinceLastFrame);
+		WorkspaceRoot::instance()->workspace()->displayFPS(fps);
+
+		const Ogre::Vector3& campos = activeCamera()->getPosition();
+		if(oldCamPos != campos)
+		{
+			WorkspaceRoot::instance()->workspace()->displayCameraPos(campos.x, campos.y, campos.z);
+			oldCamPos = campos;
+		}
+
+		int tris = render_window->getTriangleCount();
+		if(oldTris != tris)
+		{
+			WorkspaceRoot::instance()->workspace()->displayTriangleNum(tris);
+			oldTris = tris;
+		}
+		return true;
+	}
+
 	void MapPresenter::initializeScene(const QRectF& rect,
 			const Ogre::ColourValue& bkcolor, 
 			const Ogre::Vector3& eye_pos,
@@ -101,6 +166,11 @@ namespace sandgis
 
 		//create camera
 		active_camera_ = scene_->createCamera("MainRenderScene.Camera");
+
+		//initialise camera man
+		camera_man_= new SdkCameraMan(active_camera_);
+		//camera_man_->setStyle(OgreBites::CS_ORBIT);
+
 		// Position it at 500 in Z direction
 		active_camera_->setPosition(eye_pos);
 		// Look back along -Z
@@ -118,9 +188,7 @@ namespace sandgis
 		active_camera_->setNearClipDistance(near_distance);
 		active_camera_->setFarClipDistance(far_distance);
 
-		//initialise camera man
-		camera_man_= new SdkCameraMan(active_camera_);
-		camera_man_->setStyle(OgreBites::CS_ORBIT);
+		
 
 		//add viewport
 		Ogre::RenderWindow* pRenderWindow = view_->renderWindow();
@@ -165,7 +233,6 @@ namespace sandgis
 		l = scene_->createLight("GreenLight");
 		l->setPosition(1460,1450,-100);
 		l->setDiffuseColour(0.5, 1.0, 0.5);
-
 		camera_man_->setTarget(ninjaNode);
 		//---------------------------------------------rendering test-------------------------
 

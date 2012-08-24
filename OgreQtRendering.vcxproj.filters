@@ -69,6 +69,9 @@
     <ClCompile Include="src\View\QtMainRenderView.cpp">
       <Filter>Source Files\View</Filter>
     </ClCompile>
+    <ClCompile Include="src\Presenter\MapPresenter.cpp">
+      <Filter>Source Files\Presenter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resources\resource.h">
@@ -115,6 +118,12 @@
     </ClInclude>
     <ClInclude Include="include\View\QtMainRenderView.h">
       <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Presenter\SdkCameraMan.h">
+      <Filter>Header Files\Presenter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Presenter\MapPresenter.h">
+      <Filter>Header Files\Presenter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

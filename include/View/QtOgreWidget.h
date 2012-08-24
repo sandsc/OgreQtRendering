@@ -25,7 +25,7 @@
 namespace sandgis
 {
 	// -------------------------------------------------------------------------------------
-	/// @brief  <++>overlay widget use to display message 
+	/// @brief  overlay widget use to display message 
 	//when scene is not rendering into render window
 	// =------------------------------------------------------------------------------------
 	class OverlayWidget : public QWidget
@@ -59,7 +59,7 @@ namespace sandgis
 	class QtOgreWidget;
 
 
-
+	class MapPresenter;
 	// -------------------------------------------------------------------------------------
 	///@brief ogre render window combined with qt!
 	///       original code is ported from Ogitor, thanks very much
@@ -73,12 +73,12 @@ namespace sandgis
 	{
 		Q_OBJECT;
 	public:
-		QtOgreWidget(QWidget *parent=0, bool doLoadFile = false, Qt::WindowFlags f=0);
-
+		QtOgreWidget(MapPresenter* map, QWidget *parent=0, bool doLoadFile = false, Qt::WindowFlags f=0);
 		virtual ~QtOgreWidget();
 
-		// Override QWidget::paintEngine to return NULL
-		QPaintEngine* paintEngine() const; // Turn off QTs paint engine for the Ogre widget.
+		///Override QWidget::paintEngine to return NULL
+		///Turn off QTs paint engine for the Ogre widget.
+		QPaintEngine* paintEngine() const;
 
 		void showCursorEx(bool bShow)
 		{
@@ -127,17 +127,6 @@ namespace sandgis
 		// =------------------------------------------------------------------------------------
 		void sceneDestroyed(void);
 
-		// -------------------------------------------------------------------------------------
-		/// @brief  currentSceneName gets current scene name which this view display
-		///
-		/// @returns   
-		// =------------------------------------------------------------------------------------
-		const char* currentSceneName(void) const
-		{
-			return "MainRenderScene";
-		}
-
-		//
 		//#MeshSerializerListener interface
 		void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name);
 		void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name)
@@ -158,19 +147,19 @@ namespace sandgis
 		bool  mOgreInitialised;
 		bool  mRenderStop;
 		float mFrameRate;
+		bool  is_scene_loaded_;
+		bool disposed_;
+		MapPresenter* map_presenter_;
 		Ogre::RenderWindow *mRenderWindow;
 
 	protected:
 		bool           mSwitchingScene;
-
 		unsigned int  mLastKeyEventTime;
 		volatile bool mScreenResize;
 		int           mFrameCounter;
 		double        mTotalFrameTime;
 		bool          mCursorHidden;
 		bool          mDoLoadFile;
-		bool disposed_;
-
 		OverlayWidget *mOverlayWidget;
 
 		// -------------------------------------------------------------------------------------
@@ -208,7 +197,6 @@ namespace sandgis
 		///@brief ogre frame listener
 		bool frameStarted(const Ogre::FrameEvent& evt);
 
-		unsigned int getMouseButtons(Qt::MouseButtons buttons, Qt::MouseButton button);
 		float caculateFPS(float time);
 		/// show objects context menu
 		void showObjectMenu();
@@ -216,7 +204,5 @@ namespace sandgis
 
 }
 //-----------------------------------------------------------------------------------------
-
 #endif // __OGREWIDGET_HXX__
-
 //-----------------------------------------------------------------------------------------

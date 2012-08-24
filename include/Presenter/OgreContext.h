@@ -66,17 +66,7 @@ namespace sandgis
 		}
 
 		///@brief load a scene
-		///@param rect:scene initial extents
-		///@param bkcolor scene background color
-		///@param eye_pos initial eye position
-		///@param target_pos initial target position
-		///@param renderwindow render window which scene rendering into
-		void createScene(const QString& name,
-			const QRectF& rect,
-			const Ogre::ColourValue& bkcolor, 
-			const Ogre::Vector3& eye_pos,
-			const Ogre::Vector3& target_pos,
-			Ogre::RenderWindow* pRenderWindow);
+		Ogre::SceneManager* createScene(const QString& name);
 
 		///@brief distroy a scene
 		///@param scene name
@@ -88,12 +78,6 @@ namespace sandgis
 
 		///@brief gets first created scene manager
 		Ogre::SceneManager* getFirstSceneManager() const;
-
-		///@brief gets if there is an invalid scene
-		bool isSceneLoaded(void) const
-		{
-			return (_scenemanagers.size() != 0);
-		}
 
 		///@brief gets ogre root instance
 		Ogre::Root* root() const

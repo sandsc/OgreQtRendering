@@ -15,10 +15,14 @@
 // =====================================================================================
 #include "view/QtMainRenderView.h"
 #include "view/QtOgreWidget.h"
+#include "presenter/MapPresenter.h"
+#include "OgreSceneManager.h"
+
 namespace sandgis
 {
 	QtMainRenderView::QtMainRenderView(QWidget* parent, bool doloadfile, int f, bool content_owner)
-		:ogre_widget_(new QtOgreWidget(parent, doloadfile, static_cast<Qt::WindowFlags>(f))),
+		: map_presenter_(new MapPresenter(this)),
+		ogre_widget_(new QtOgreWidget(map_presenter_.get(), parent, doloadfile, static_cast<Qt::WindowFlags>(f))),
 		content_owner_(content_owner)
 	{
 		this->setName("SandGisMainRenderView");
@@ -51,7 +55,7 @@ namespace sandgis
 
 	const char* QtMainRenderView::currentSceneName(void) const
 	{
-		return ogre_widget_->currentSceneName();
+		return map_presenter_->sceneManager()->getName().c_str();
 	}
 
 	void QtMainRenderView::update(void)

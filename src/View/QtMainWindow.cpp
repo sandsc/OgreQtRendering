@@ -690,9 +690,7 @@ namespace sandgis
 	unsigned int lastConsolePos = 0;
 	void QtMainWindow::timerLoop()
 	{
-		bool isSceneLoaded = WorkspaceRoot::instance()->ogreContext()->isSceneLoaded();
-
-		if(isMinimized() || !app_active_ || !isSceneLoaded)
+		if(isMinimized() || !app_active_)
 		{
 			if(timer_->interval() != 200)
 				timer_->setInterval(200);
@@ -723,34 +721,33 @@ namespace sandgis
 		}
 #endif
 
-		if(isSceneLoaded)
+
+		//limit fps to target_render_count_
+		//default value is 30 fps
+		QTime time = QTime::currentTime();
+		unsigned int curtime = time.hour() * 60 + time.minute();
+		curtime = (curtime * 60) + time.second();
+		curtime = (curtime * 1000) + time.msec();
+
+		unsigned int timediff = curtime - last_time_;
+		last_time_ = curtime;
+
+		renderDelta += timediff;
+
+		unsigned int TargetDelta;
+
+		//targetdelta is the value how many milliseconds need to update frame at most!
+		if(target_render_count_ > 0)
+			TargetDelta = 1000 / target_render_count_;
+		else
+			TargetDelta = 1000000;
+
+		if(renderDelta >= TargetDelta)
 		{
-			//limit fps to target_render_count_
-			//default value is 30 fps
-			QTime time = QTime::currentTime();
-			unsigned int curtime = time.hour() * 60 + time.minute();
-			curtime = (curtime * 60) + time.second();
-			curtime = (curtime * 1000) + time.msec();
-
-			unsigned int timediff = curtime - last_time_;
-			last_time_ = curtime;
-
-			renderDelta += timediff;
-
-			unsigned int TargetDelta;
-
-			//targetdelta is the value how many milliseconds need to update frame at most!
-			if(target_render_count_ > 0)
-				TargetDelta = 1000 / target_render_count_;
-			else
-				TargetDelta = 1000000;
-
-			if(renderDelta >= TargetDelta)
-			{
-				renderDelta = renderDelta % TargetDelta;
-				this->updateRenderViews();
-			}
+			renderDelta = renderDelta % TargetDelta;
+			this->updateRenderViews();
 		}
+
 	}
 
 	///update all render views

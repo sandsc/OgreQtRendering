@@ -1,6 +1,8 @@
 # Visual Studio artifacts
 bin
 obj
+debug
+release
 *.user
 *.suo
 *.vsp

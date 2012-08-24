@@ -10,7 +10,7 @@
 #include "view/Workspace.h"
 #include "presenter/WorkspaceRoot.h"
 #include "presenter/OgreContext.h"
-
+#include "presenter/mappresenter.h"
 #include "Ogre.h"
 
 #include <QtGui>
@@ -28,8 +28,12 @@ namespace sandgis
 		painter.drawText(QRectF(0,0,width(),height()),msgstr,QTextOption(Qt::AlignVCenter | Qt::AlignHCenter));
 	}
 	//----------------------------------------------------------------------------------------
-	QtOgreWidget::QtOgreWidget(QWidget *parent, bool doLoadFile, Qt::WindowFlags f): QWidget( parent,  f /*| Qt::MSWindowsOwnDC*/ ),
-		mRenderWindow(0), 
+	QtOgreWidget::QtOgreWidget(MapPresenter* presenter, QWidget *parent, 
+		bool doLoadFile, 
+		Qt::WindowFlags f): QWidget( parent,  f /*| Qt::MSWindowsOwnDC*/ ),
+		mRenderWindow(0),
+		map_presenter_(presenter),
+		is_scene_loaded_(false),
 		mOgreInitialised(false),
 		mLastKeyEventTime(0),
 		mRenderStop(false), 
@@ -41,9 +45,6 @@ namespace sandgis
 		mFrameCounter = 0;
 		mTotalFrameTime = 0;
 		mSwitchingScene = false;
-
-		/*for(int i = 0;i < 1024;i++)
-			ViewKeyboard[i] = false;*/
 
 		setAcceptDrops(true);
 		setContextMenuPolicy( Qt::PreventContextMenu );
@@ -67,6 +68,7 @@ namespace sandgis
 			Ogre::Root* root = WorkspaceRoot::instance()->ogreContext()->root();
 			root->removeFrameListener(this);
 			root->getRenderSystem()->removeListener(this);
+			root->destroyRenderTarget(mRenderWindow);
 		}   
 		destroy();
 		disposed_ = true;
@@ -93,20 +95,12 @@ namespace sandgis
 			WorkspaceRoot::instance()->workspace()->displayTriangleNum(tris);
 			oldTris = tris;
 		}
-
-		//------------------------------test--------------------------------------
-		Ogre::AnimationState* robotWalkState = WorkspaceRoot::instance()->ogreContext()->getFirstSceneManager()->getEntity("robot")->getAnimationState("Walk");
-		robotWalkState->addTime(evt.timeSinceLastFrame);
-
-		Ogre::AnimationState* ninjaWalkState = WorkspaceRoot::instance()->ogreContext()->getFirstSceneManager()->getEntity("ninja")->getAnimationState("Walk");
-		ninjaWalkState->addTime(evt.timeSinceLastFrame);
-
 		return true;
 	}
 
 	void QtOgreWidget::eventOccurred (const Ogre::String &eventName, const Ogre::NameValuePairList *parameters /*=0*/ )
 	{
-		//rendersystem listener
+		//rendersystem event listener
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -143,12 +137,10 @@ namespace sandgis
 		Ogre::MeshManager::getSingletonPtr()->setListener(this);
 		mOgreInitialised = true;
 
-		//--------------test load scene--------------------
-		OgreContext* pOgreContext = WorkspaceRoot::instance()->ogreContext();
-		QRectF rect(0, 3000, 3000, 3000);
-		pOgreContext->createScene("MainRenderScene", rect, Ogre::ColourValue(0.4F, 0.5F, 0.3F), 
-			Ogre::Vector3(1500, 1500, 200), Ogre::Vector3(1500, 1500, 0), mRenderWindow);
-		mOverlayWidget->hide();
+		//
+		map_presenter_->initializeScene(QRectF(0, 3000, 3000, 3000), Ogre::ColourValue(0.5, 0.4, 1),
+			Ogre::Vector3(1500,1500, 200),
+			Ogre::Vector3(1500, 1500, 0));
 	}
 
 	//------------------------------------------------------------------------------------
@@ -176,8 +168,7 @@ namespace sandgis
 			initializeRenderWindow();
 
 		Ogre::Root* proot = WorkspaceRoot::instance()->ogreContext()->root();
-		bool is_scene_loaded = WorkspaceRoot::instance()->ogreContext()->isSceneLoaded();
-		if(mOgreInitialised && is_scene_loaded && !mRenderStop)
+		if(mOgreInitialised && is_scene_loaded_ && !mRenderStop)
 		{
 			if(this->width() > 0 && this->height() > 0)
 			{
@@ -199,7 +190,7 @@ namespace sandgis
 		else
 		{
 			QString msgstr = tr("Initializing OGRE...");
-			if(mOgreInitialised && !is_scene_loaded)
+			if(mOgreInitialised && !is_scene_loaded_)
 			{
 				if(mDoLoadFile)
 					msgstr = tr("Loading Scene...");
@@ -239,35 +230,30 @@ namespace sandgis
 	void QtOgreWidget::sceneLoaded(void)
 	{
 		mOverlayWidget->hide();
+		is_scene_loaded_ = true;
 	}
 
 	void QtOgreWidget::sceneDestroyed(void)
 	{
-
+		is_scene_loaded_ = false;
 	}
-	
+
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::focusInEvent(QFocusEvent *evt)
 	{
-		//if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		//    return;
-
-	/*	for(int i = 0;i < 1024;i++)
-			ViewKeyboard[i] = false;*/
+		if (!is_scene_loaded_)
+			return;
 
 		evt->setAccepted(true);
 	}
+
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::focusOutEvent(QFocusEvent *evt)
 	{
-		/*if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
-		/*for(int i = 0;i < 1024;i++)
-			ViewKeyboard[i] = false;*/
-
-		/* if(OgitorsRoot::getSingletonPtr()->GetTerrainEditor())
-		OgitorsRoot::getSingletonPtr()->GetTerrainEditor()->stopEdit();*/
+		map_presenter_->_onViewFocusOut();
 
 		evt->setAccepted(true);
 	}
@@ -277,14 +263,14 @@ namespace sandgis
 		if(evt->isAutoRepeat())
 			return;
 
-		/* if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
 		unsigned int key = evt->key();
 		if(key > 255)
 			key = (key & 0xFFF) + 0xFF;
 
-		//OgitorsRoot::getSingletonPtr()->OnKeyDown(key);
+		map_presenter_->_onKeyDown(evt->key());
 	}
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::keyReleaseEvent(QKeyEvent *evt)
@@ -292,84 +278,60 @@ namespace sandgis
 		if(evt->isAutoRepeat())
 			return;
 
-		/*   if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
 		unsigned int key = evt->key();
 		if(key > 255)
 			key = (key & 0xFFF) + 0xFF;
 
-		//OgitorsRoot::getSingletonPtr()->OnKeyUp(key);
+		map_presenter_->_onKeyDown((int)key);
 	}
-	//------------------------------------------------------------------------------------
-	unsigned int QtOgreWidget::getMouseButtons(Qt::MouseButtons buttons, Qt::MouseButton button)
-	{
-		unsigned int flags = 0;
-		buttons |= button;
 
-		/* if(buttons.testFlag(Qt::LeftButton))
-		flags |= OMB_LEFT;
-		if(buttons.testFlag(Qt::RightButton))
-		flags |= OMB_RIGHT;
-		if(buttons.testFlag(Qt::MidButton))
-		flags |= OMB_MIDDLE;*/
-
-		return flags;
-	}
 	//------------------------------------------------------------------------------------
 	bool OgreWidgetMouseMovedSincePress = false;
 	void QtOgreWidget::mouseMoveEvent(QMouseEvent *evt)
 	{
-		/* if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
 		if(!hasFocus())
 			setFocus();
 
 		Ogre::Vector2 pos(evt->x(), evt->y());
 
-		//OgitorsRoot::getSingletonPtr()->OnMouseMove(pos, getMouseButtons(evt->buttons(), evt->button()));
+		map_presenter_->_onMouseMove(evt->buttons(), evt->x(), evt->y());
 
 		OgreWidgetMouseMovedSincePress = true;
 	}
+
+
+
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::mousePressEvent(QMouseEvent *evt)
 	{
-		/*  if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
 		if(!hasFocus())
 			setFocus();
 
-		Ogre::Vector2 pos1(evt->x(), evt->y());
-
-		/*if(evt->button() == Qt::LeftButton)
-		OgitorsRoot::getSingletonPtr()->OnMouseLeftDown(pos1, getMouseButtons(evt->buttons(), evt->button()));
-		else if(evt->button() == Qt::RightButton)
-		OgitorsRoot::getSingletonPtr()->OnMouseRightDown(pos1, getMouseButtons(evt->buttons(), evt->button()));
-		else if(evt->button() == Qt::MidButton)
-		OgitorsRoot::getSingletonPtr()->OnMouseMiddleDown(pos1, getMouseButtons(evt->buttons(), evt->button()));*/
+		map_presenter_->_onMouseDown(evt->button(), evt->x(), evt->y());
 
 		OgreWidgetMouseMovedSincePress = false;
 	}
+
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::mouseReleaseEvent(QMouseEvent *evt)
 	{
-		/* if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
 		if(!hasFocus())
 			setFocus();
 
-		Ogre::Vector2 pos(evt->x(), evt->y());
+		map_presenter_->_onMouseUp(evt->button(), evt->x(), evt->y());
 
-		/* if(evt->button() == Qt::LeftButton)
-		OgitorsRoot::getSingletonPtr()->OnMouseLeftUp(pos, getMouseButtons(evt->buttons(), evt->button()));
-		else if(evt->button() == Qt::RightButton)
-		OgitorsRoot::getSingletonPtr()->OnMouseRightUp(pos, getMouseButtons(evt->buttons(), evt->button()));
-		else if(evt->button() == Qt::MidButton)
-		OgitorsRoot::getSingletonPtr()->OnMouseMiddleUp(pos, getMouseButtons(evt->buttons(), evt->button()));
-		*/
 		if(!OgreWidgetMouseMovedSincePress && evt->button() == Qt::RightButton)
 		{
 			setContextMenuPolicy( Qt::PreventContextMenu );
@@ -379,26 +341,22 @@ namespace sandgis
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::leaveEvent(QEvent *evt)
 	{
-		/* if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
-		Ogre::Vector2 pos(-1, -1);
-
-		//OgitorsRoot::getSingletonPtr()->OnMouseLeave(pos, 0);
 		OgreWidgetMouseMovedSincePress = true;
 	}
+
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::wheelEvent(QWheelEvent *evt)
 	{
-		/* if(!OgitorsRoot::getSingletonPtr()->IsSceneLoaded())
-		return;*/
+		if (!is_scene_loaded_)
+			return;
 
 		if(!hasFocus())
 			setFocus();
 
-		Ogre::Vector2 pos(evt->x(), evt->y());
-
-		//OgitorsRoot::getSingletonPtr()->OnMouseWheel(pos, evt->delta(), getMouseButtons(evt->buttons(), Qt::NoButton));
+		map_presenter_->_onMouseWheel(evt->delta());
 	}
 
 	//------------------------------------------------------------------------------------
@@ -527,8 +485,6 @@ namespace sandgis
 	//-------------------------------------------------------------------------------------------
 	void QtOgreWidget::contextMenu(int id)
 	{
-		/*if(!OgitorsRoot::getSingletonPtr()->GetSelection()->isEmpty())
-		OgitorsRoot::getSingletonPtr()->GetSelection()->getAsSingle()->onObjectContextMenu(id);*/
 	}
 	//----------------------------------------------------------------------------------------
 }

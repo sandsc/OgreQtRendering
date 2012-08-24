@@ -16,9 +16,14 @@
 #pragma once
 
 #include "view/RenderView.h"
+
+//stl
+#include <memory>
+
 namespace sandgis
 {
 	class QtOgreWidget;
+	class MapPresenter;
 	// -------------------------------------------------------------------------------------
 	/// @brief  qt render view impl. using qt ogre widget
 	// =------------------------------------------------------------------------------------
@@ -48,6 +53,7 @@ namespace sandgis
 
 		_ContentType* content(void) const;
 	private:
+		std::unique_ptr<MapPresenter> map_presenter_;
 		QtOgreWidget* ogre_widget_;
 		bool content_owner_;
 	};

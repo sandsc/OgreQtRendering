@@ -82,7 +82,7 @@ namespace sandgis
 		float fps = mRenderWindow->getAverageFPS();//this->caculateFPS(evt.timeSinceLastFrame);
 		WorkspaceRoot::instance()->workspace()->displayFPS(fps);
 
-		const Ogre::Vector3& campos = mRenderWindow->getViewport(0)->getCamera()->getPosition();
+		const Ogre::Vector3& campos = map_presenter_->activeCamera()->getPosition();
 		if(oldCamPos != campos)
 		{
 			WorkspaceRoot::instance()->workspace()->displayCameraPos(campos.x, campos.y, campos.z);

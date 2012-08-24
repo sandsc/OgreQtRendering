@@ -120,6 +120,7 @@ namespace sandgis
 
 		//initialise camera man
 		camera_man_= new SdkCameraMan(active_camera_);
+		camera_man_->setStyle(OgreBites::CS_ORBIT);
 
 		//add viewport
 		Ogre::RenderWindow* pRenderWindow = view_->renderWindow();
@@ -137,8 +138,8 @@ namespace sandgis
 
 		scene_->getRootSceneNode()->createChildSceneNode(robotLoc, robotRot)->attachObject(robotEntity);
 
-		AnimationState* robotWalkState = robotEntity->getAnimationState("Walk");
-		robotWalkState->setEnabled(true);
+		/*AnimationState* robotWalkState = robotEntity->getAnimationState("Walk");
+		robotWalkState->setEnabled(true);*/
 
 		// Create the ninja entity
 		Entity *ent = scene_->createEntity("ninja", "ninja.mesh");
@@ -152,8 +153,8 @@ namespace sandgis
 		ninjaNode->scale(0.5, 0.5, 0.5);        // He's twice as big as our robot...
 		ninjaNode->attachObject(ent);
 
-		AnimationState* ninjaWalkState = ent->getAnimationState("Walk");
-		ninjaWalkState->setEnabled(true);
+		/*AnimationState* ninjaWalkState = ent->getAnimationState("Walk");
+		ninjaWalkState->setEnabled(true);*/
 
 		// Give it a little ambience with lights
 		Ogre::Light* l;
@@ -164,7 +165,11 @@ namespace sandgis
 		l = scene_->createLight("GreenLight");
 		l->setPosition(1460,1450,-100);
 		l->setDiffuseColour(0.5, 1.0, 0.5);
+
+		camera_man_->setTarget(ninjaNode);
 		//---------------------------------------------rendering test-------------------------
+
+		view_->sceneLoaded();
 	}
 
 	void MapPresenter::dispose(void)
@@ -173,5 +178,6 @@ namespace sandgis
 		{
 			WorkspaceRoot::instance()->ogreContext()->root()->destroySceneManager(scene_);
 		}
+		view_->sceneDestroyed();
 	}
 }

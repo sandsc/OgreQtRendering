@@ -121,9 +121,13 @@ namespace sandgis
 	{
 		//Creating Ogre render Window
 		Ogre::NameValuePairList params;
+		params["useNVPerfHUD"] = "true";
+
 #if defined(Q_WS_MAC) || defined(Q_WS_WIN)
 		params["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)hwnd);
-#else
+#endif
+
+#if defined(Q_WS_X11)
 		const QX11Info info = *x11info;
 		//QX11Info info = x11Info();
 		Ogre::String winHandle;
@@ -135,7 +139,7 @@ namespace sandgis
 		winHandle += ":";
 		winHandle += Ogre::StringConverter::toString((unsigned long)(info.visual()));
 
-		params["externalWindowHandle"] = winHandle;
+		params["parentWindowHandle"] = winHandle;
 #endif
 
 #if defined(Q_WS_MAC)

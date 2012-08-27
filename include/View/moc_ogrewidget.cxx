@@ -1,15 +1,15 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'ogrewidget.h'
+** Meta object code from reading C++ file 'QtOgreWidget.h'
 **
-** Created: Wed Aug 8 14:51:32 2012
+** Created: Mon Aug 27 14:11:08 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "qtogrewidget.h"
+#include "QtOgreWidget.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'ogrewidget.h' doesn't include <QObject>."
+#error "The header file 'QtOgreWidget.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63
 #error "This file was generated using the moc from 4.8.2. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -78,7 +78,7 @@ int sandgis::OverlayWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a
         return _id;
     return _id;
 }
-static const uint qt_meta_data_sandgis__OgreWidget[] = {
+static const uint qt_meta_data_sandgis__QtOgreWidget[] = {
 
  // content:
        6,       // revision
@@ -92,15 +92,15 @@ static const uint qt_meta_data_sandgis__OgreWidget[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      21,   20,   20,   20, 0x0a,
-      36,   33,   20,   20, 0x0a,
+      23,   22,   22,   22, 0x0a,
+      38,   35,   22,   22, 0x0a,
 
        0        // eod
 };
 
-static const char qt_meta_stringdata_sandgis__OgreWidget[] = {
-    "sandgis::QtOgreWidget\0\0timerLoop()\0id\0"
-    "contextMenu(int)\0"
+static const char qt_meta_stringdata_sandgis__QtOgreWidget[] = {
+    "sandgis::QtOgreWidget\0\0timerLoop()\0"
+    "id\0contextMenu(int)\0"
 };
 
 void sandgis::QtOgreWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -121,8 +121,8 @@ const QMetaObjectExtraData sandgis::QtOgreWidget::staticMetaObjectExtraData = {
 };
 
 const QMetaObject sandgis::QtOgreWidget::staticMetaObject = {
-    { &QWidget::staticMetaObject, qt_meta_stringdata_sandgis__OgreWidget,
-      qt_meta_data_sandgis__OgreWidget, &staticMetaObjectExtraData }
+    { &QWidget::staticMetaObject, qt_meta_stringdata_sandgis__QtOgreWidget,
+      qt_meta_data_sandgis__QtOgreWidget, &staticMetaObjectExtraData }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
@@ -137,14 +137,10 @@ const QMetaObject *sandgis::QtOgreWidget::metaObject() const
 void *sandgis::QtOgreWidget::qt_metacast(const char *_clname)
 {
     if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_sandgis__OgreWidget))
+    if (!strcmp(_clname, qt_meta_stringdata_sandgis__QtOgreWidget))
         return static_cast<void*>(const_cast< QtOgreWidget*>(this));
-    if (!strcmp(_clname, "Ogre::FrameListener"))
-        return static_cast< Ogre::FrameListener*>(const_cast< QtOgreWidget*>(this));
-    if (!strcmp(_clname, "Ogre::RenderSystem::Listener"))
-        return static_cast< Ogre::RenderSystem::Listener*>(const_cast< QtOgreWidget*>(this));
-    if (!strcmp(_clname, "Ogre::MeshSerializerListener"))
-        return static_cast< Ogre::MeshSerializerListener*>(const_cast< QtOgreWidget*>(this));
+    if (!strcmp(_clname, "RenderView"))
+        return static_cast< RenderView*>(const_cast< QtOgreWidget*>(this));
     return QWidget::qt_metacast(_clname);
 }
 

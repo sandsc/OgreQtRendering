@@ -1,7 +1,6 @@
 #include "view/qtmainwindow.h"
 #include "view/qtogrewidget.h"
 #include "view/workspacelayout.h"
-#include "view/QtMainRenderView.h"
 #include "presenter/WorkspaceRoot.h"
 #include "presenter/OgreContext.h"
 
@@ -76,7 +75,7 @@ namespace sandgis
 
 	void QtMainWindow::createRenderWindow(void)
 	{
-		render_views_.append(new QtMainRenderView());
+		render_views_.append(new QtOgreWidget("sandgis_mainrenderview", this));
 	}
 
 	//------------------------------------------------------------------------------
@@ -757,7 +756,7 @@ namespace sandgis
 		auto it_end = render_views_.end();
 		for (; it != it_end; ++it)
 		{
-			(*it)->update();
+			(*it)->refresh();
 		}
 	}
 

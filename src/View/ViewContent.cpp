@@ -8,7 +8,8 @@
 namespace sandgis
 {
 
-	ViewContent::ViewContent(void)
+	ViewContent::ViewContent(const std::string& name) :
+		name_(name)
 	{
 
 	}
@@ -31,8 +32,8 @@ namespace sandgis
 	//----------------------------------------------------------------------
 	//  dock content impl
 	//----------------------------------------------------------------------
-	DockContent::DockContent(void)
-		: dock_state_(dockstate::None)
+	DockContent::DockContent(const std::string& name) 
+		: ViewContent(name), dock_state_(dockstate::None)
 	{
 
 	}

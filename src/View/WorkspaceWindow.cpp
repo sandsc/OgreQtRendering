@@ -25,6 +25,5 @@ namespace sandgis
 
 	WorkspaceWindow::~WorkspaceWindow(void)
 	{
-		delete content_;
 	}
 }

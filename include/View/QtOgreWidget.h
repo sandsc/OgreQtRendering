@@ -66,8 +66,8 @@ namespace sandgis
 	{
 		Q_OBJECT;
 	public:
-		QtOgreWidget(QWidget *parent=0, Qt::WindowFlags f=0);
-		virtual ~QtOgreWidget();
+		QtOgreWidget(const std::string& name, QWidget *parent=0, Qt::WindowFlags f=0);
+		~QtOgreWidget();
 
 		///Override QWidget::paintEngine to return NULL
 		///Turn off QTs paint engine for the Ogre widget.
@@ -99,9 +99,6 @@ namespace sandgis
 			return mScreenResize;
 		}
 
-		///@brief callback method for internal using
-		bool _notifyFrameStarted(const Ogre::FrameEvent& evt);
-
 		///@brief proccess key action invorked by mainwindow
 		///       don't call this method directly
 		void _processKeyActions(void);
@@ -118,10 +115,14 @@ namespace sandgis
 		// =------------------------------------------------------------------------------------
 		void sceneLoaded(void);
 
-		// -------------------------------------------------------------------------------------
-		/// @brief  sceneDestroyed notify method called when scene destroyed
-		// =------------------------------------------------------------------------------------
-		void sceneDestroyed(void);
+		///@brief override from viewcontent 
+		///refresh widget
+		void refresh(void);
+
+		ViewContent::_ContentType* content(void)
+		{
+			return this;
+		}
 
 		//----------------
 		void stopRendering(bool stop) 

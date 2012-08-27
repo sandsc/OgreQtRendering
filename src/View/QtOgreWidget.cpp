@@ -28,8 +28,8 @@ namespace sandgis
 		painter.drawText(QRectF(0,0,width(),height()),msgstr,QTextOption(Qt::AlignVCenter | Qt::AlignHCenter));
 	}
 	//----------------------------------------------------------------------------------------
-	QtOgreWidget::QtOgreWidget(	QWidget *parent, 
-		Qt::WindowFlags f): QWidget( parent,  f /*| Qt::MSWindowsOwnDC*/ ),
+	QtOgreWidget::QtOgreWidget(const std::string& name, QWidget *parent,
+		Qt::WindowFlags f): RenderView(name), QWidget( parent,  f),
 		mRenderWindow(0),
 		map_presenter_(new MapPresenter(this)),
 		is_scene_loaded_(false),
@@ -49,8 +49,10 @@ namespace sandgis
 
 		setFocusPolicy(Qt::WheelFocus);
 		setMouseTracking(true);
-		setAttribute(Qt::WA_NoBackground);
+		//setAttribute(Qt::WA_NoBackground);
+		//These attributes are the same as those use in a QGLWidget
 		setAttribute(Qt::WA_PaintOnScreen);
+		setAttribute(Qt::WA_NoSystemBackground);
 
 		mOverlayWidget = new OverlayWidget(this);
 		QVBoxLayout *layout = new QVBoxLayout();
@@ -82,7 +84,8 @@ namespace sandgis
 			this->height(), 
 			0, 
 			false);
-#else
+#endif
+#if defined(Q_WS_X11)
 		const QX11Info info = this->x11Info();
 		mRenderWindow = WorkspaceRoot::instance()->ogreContext()->initRenderWindowFromExternal("QtSandGisRenderWindow",
 			(unsigned)this->winId(), 
@@ -114,14 +117,9 @@ namespace sandgis
 
 		update();
 	}
-	//------------------------------------------------------------------------------------
-	void QtOgreWidget::setDoLoadFile(bool doLoad)
-	{
-		mDoLoadFile = doLoad;
-	}
+
 	//------------------------------------------------------------------------------------
 	bool adjustFrameTime = false;
-
 	void QtOgreWidget::paintEvent(QPaintEvent* evt)
 	{
 		if(!isVisible())
@@ -155,17 +153,11 @@ namespace sandgis
 			QString msgstr = tr("Initializing OGRE...");
 			if(mOgreInitialised && !is_scene_loaded_)
 			{
-				if(mDoLoadFile)
-					msgstr = tr("Loading Scene...");
-				else
-					msgstr = tr("Scene is not load...");
+				msgstr = tr("Scene is not load...");
 			}
-
 			if(mRenderStop)
 				msgstr = tr("Rendering stopped...");
-
 			mOverlayWidget->setMessageString(msgstr);
-
 			adjustFrameTime = true;
 		}
 	}
@@ -186,19 +178,15 @@ namespace sandgis
 		mScreenResize = false;
 	}
 
-
-	//----------------------------------------------------------------------
-	//  
-	//----------------------------------------------------------------------
 	void QtOgreWidget::sceneLoaded(void)
 	{
 		mOverlayWidget->hide();
 		is_scene_loaded_ = true;
 	}
 
-	void QtOgreWidget::sceneDestroyed(void)
+	void QtOgreWidget::refresh(void)
 	{
-		is_scene_loaded_ = false;
+		this->update();
 	}
 
 	//------------------------------------------------------------------------------------
@@ -299,6 +287,7 @@ namespace sandgis
 			showObjectMenu();
 		}
 	}
+
 	//------------------------------------------------------------------------------------
 	void QtOgreWidget::leaveEvent(QEvent *evt)
 	{
@@ -371,7 +360,6 @@ namespace sandgis
 	//-------------------------------------------------------------------------------------------
 	void QtOgreWidget::dragLeaveEvent(QDragLeaveEvent *evt)
 	{
-		//OgitorsRoot::getSingletonPtr()->OnDragLeave();
 		releaseKeyboard();
 	}
 	//-------------------------------------------------------------------------------------------
@@ -380,7 +368,6 @@ namespace sandgis
 		void *source = (void*)(evt->source());
 		unsigned int modifier = evt->keyboardModifiers();
 
-		//evt->setAccepted(OgitorsRoot::getSingletonPtr()->OnDragMove(source, modifier, evt->pos().x(), evt->pos().y()));
 	}
 	//-------------------------------------------------------------------------------------------
 	void QtOgreWidget::dropEvent(QDropEvent *evt)
@@ -389,54 +376,13 @@ namespace sandgis
 
 		evt->setDropAction(Qt::IgnoreAction);
 
-		//OgitorsRoot::getSingletonPtr()->OnDragDropped(source, evt->pos().x(), evt->pos().y());
-
 		releaseKeyboard();
 	}
+
 	//-------------------------------------------------------------------------------------------
 	void QtOgreWidget::showObjectMenu()
 	{
-		/* CBaseEditor *e = 0;
-
-		if(!OgitorsRoot::getSingletonPtr()->GetSelection()->isEmpty())
-		e = OgitorsRoot::getSingletonPtr()->GetSelection()->getAsSingle();*/
-
-		//QMenu* contextMenu = new QMenu(this);
-
-		//if(e != 0)
-		//{
-		//    contextMenu->setTitle(tr("Object Menu : ") + QString(e->getName().c_str()));
-		//    QSignalMapper *signalMapper = 0;
-		//    QSignalMapper *pasteSignalMapper = 0;
-
-		//    contextMenu->addAction(mOgitorMainWindow->actEditCopy);
-		//    contextMenu->addAction(mOgitorMainWindow->actEditCut);
-		//    contextMenu->addAction(mOgitorMainWindow->actEditDelete);
-		//    contextMenu->addAction(mOgitorMainWindow->actEditRename);
-		//    contextMenu->addSeparator();
-		//    contextMenu->addAction(mOgitorMainWindow->actEditCopyToTemplate);
-		//    contextMenu->addAction(mOgitorMainWindow->actEditCopyToTemplateWithChildren);
-
-		//    //UTFStringVector menuList;
-		//    if(e->getObjectContextMenu(menuList))
-		//    {
-		//        mOgitorMainWindow->parseAndAppendContextMenuList(contextMenu, menuList, this);
-		//    }
-		//    contextMenu->exec(QCursor::pos());
-		//    delete signalMapper;
-		//}
-		//else
-		//{
-		//    contextMenu->addAction(mOgitorMainWindow->menuFile->menuAction());
-		//    contextMenu->addAction(mOgitorMainWindow->menuEdit->menuAction());
-		//    contextMenu->addAction(mOgitorMainWindow->menuView->menuAction());
-		//    contextMenu->addAction(mOgitorMainWindow->menuCamera->menuAction());
-		//    contextMenu->addAction(mOgitorMainWindow->menuTools->menuAction());
-		//    contextMenu->addAction(mOgitorMainWindow->menuTerrainTools->menuAction());
-		//    contextMenu->exec(QCursor::pos());
-		//}
-
-		//delete contextMenu;
+	
 	}
 	//-------------------------------------------------------------------------------------------
 	void QtOgreWidget::contextMenu(int id)

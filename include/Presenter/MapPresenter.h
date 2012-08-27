@@ -39,12 +39,12 @@ class QRectF;
 
 namespace sandgis
 {
-	class QtMainRenderView;
+	class QtOgreWidget;
 	class MapPresenter : private Noncopyable
 	{
 	public:
-		typedef QtMainRenderView ViewType;
-		typedef QtMainRenderView* ViewPtr;
+		typedef QtOgreWidget ViewType;
+		typedef QtOgreWidget* ViewPtr;
 
 		// -------------------------------------------------------------------------------------
 		/// @brief  RenderingPresenter cont. & dest.
@@ -58,12 +58,6 @@ namespace sandgis
 		{
 			return view_;
 		}
-
-		// -------------------------------------------------------------------------------------
-		/// @brief  _onViewClosed called when view closed
-		// =------------------------------------------------------------------------------------
-		void _onViewClosed(void);
-
 		// -------------------------------------------------------------------------------------
 		//view input events
 		// =------------------------------------------------------------------------------------
@@ -135,7 +129,7 @@ namespace sandgis
 
 		OgreBites::SdkCameraMan* camera_man_;
 
-		struct EventListener event_listener_;
+		struct EventListener* event_listener_;
 		friend struct EventListener;
 	};
 }

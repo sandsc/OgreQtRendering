@@ -41,17 +41,17 @@ namespace sandgis
 	public:
 		typedef QWidget _ContentType;
 
-		ViewContent(void);
+		ViewContent(const std::string& name);
 		virtual ~ViewContent(void);
 		// -------------------------------------------------------------------------------------
 		/// @brief  content gets content of this view
 		///
 		/// @returns content of this view 
 		// =------------------------------------------------------------------------------------
-		virtual _ContentType* content(void) const = 0;
+		virtual _ContentType* content(void) = 0;
 
 		///@brief update view content
-		virtual void update(void) {}
+		virtual void refresh(void) {}
 
 		// -------------------------------------------------------------------------------------
 		/// @brief  title gets view content title
@@ -99,7 +99,7 @@ namespace sandgis
 	class DockContent : public ViewContent
 	{
 	public:
-		DockContent(void);
+		DockContent(const std::string& name);
 		virtual ~DockContent(void);
 
 		// -------------------------------------------------------------------------------------
@@ -132,5 +132,4 @@ namespace sandgis
 	private:
 		dockstate::DockState dock_state_;	
 	};
-
 }

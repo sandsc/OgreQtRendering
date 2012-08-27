@@ -15,7 +15,8 @@
 // =====================================================================================
 
 #include "presenter/MapPresenter.h"
-#include "view/QtMainRenderView.h"
+#include "view/Workspace.h"
+#include "view/QtOgreWidget.h"
 #include "presenter/WorkspaceRoot.h"
 #include "presenter/SdkCameraMan.h"
 #include "presenter/OgreContext.h"
@@ -46,9 +47,6 @@ namespace sandgis
 		_OwnerType* owner_;
 	};
 
-
-
-
 	MapPresenter::MapPresenter(ViewPtr view)
 		: view_(view),
 		camera_man_(0),
@@ -75,11 +73,11 @@ namespace sandgis
 		root->removeFrameListener(event_listener_);
 
 		delete event_listener_;
-	}
 
-	void  MapPresenter::_onViewClosed(void)
-	{
-		this->dispose();
+		if (scene_)
+		{
+			WorkspaceRoot::instance()->ogreContext()->root()->destroySceneManager(scene_);
+		}
 	}
 
 	void MapPresenter::_onMouseDown(int button, int x, int y)
@@ -120,6 +118,8 @@ namespace sandgis
 
 	}
 
+	static int oldTris;
+	static Ogre::Vector3 oldCamPos = Ogre::Vector3::ZERO;
 	bool MapPresenter::frameStarted(const Ogre::FrameEvent& evt)
 	{
 		if (!view_)
@@ -146,6 +146,13 @@ namespace sandgis
 		return true;
 	}
 
+	bool MapPresenter::frameRenderingQueued(const Ogre::FrameEvent& evt)
+	{
+		if (camera_man_)
+			return camera_man_->frameRenderingQueued(evt);
+		return true;
+	}
+
 	void MapPresenter::initializeScene(const QRectF& rect,
 			const Ogre::ColourValue& bkcolor, 
 			const Ogre::Vector3& eye_pos,
@@ -169,7 +176,7 @@ namespace sandgis
 
 		//initialise camera man
 		camera_man_= new SdkCameraMan(active_camera_);
-		//camera_man_->setStyle(OgreBites::CS_ORBIT);
+		camera_man_->setStyle(OgreBites::CS_ORBIT);
 
 		// Position it at 500 in Z direction
 		active_camera_->setPosition(eye_pos);
@@ -187,8 +194,6 @@ namespace sandgis
 		//set near and far distance
 		active_camera_->setNearClipDistance(near_distance);
 		active_camera_->setFarClipDistance(far_distance);
-
-		
 
 		//add viewport
 		Ogre::RenderWindow* pRenderWindow = view_->renderWindow();
@@ -237,14 +242,5 @@ namespace sandgis
 		//---------------------------------------------rendering test-------------------------
 
 		view_->sceneLoaded();
-	}
-
-	void MapPresenter::dispose(void)
-	{
-		if (scene_)
-		{
-			WorkspaceRoot::instance()->ogreContext()->root()->destroySceneManager(scene_);
-		}
-		view_->sceneDestroyed();
 	}
 }

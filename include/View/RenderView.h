@@ -23,6 +23,10 @@ namespace sandgis
 	class RenderView : public ViewContent
 	{
 	public:
+		RenderView(const std::string& name) : ViewContent(name)
+		{
+
+		}
 		// -------------------------------------------------------------------------------------
 		/// @brief  ~RenderView virtual dest.
 		// =------------------------------------------------------------------------------------
@@ -39,17 +43,5 @@ namespace sandgis
 		/// @brief  sceneLoaded notify when a scene has loaded
 		// =------------------------------------------------------------------------------------
 		virtual void sceneLoaded(void) = 0;
-
-		// -------------------------------------------------------------------------------------
-		/// @brief  sceneDestroyed notify when a scene has been destroyed
-		// =------------------------------------------------------------------------------------
-		virtual void sceneDestroyed(void) = 0; 
-
-		// -------------------------------------------------------------------------------------
-		/// @brief  currentSceneName gets current scene name
-		///
-		/// @returns   
-		// =------------------------------------------------------------------------------------
-		virtual const char* currentSceneName(void) const = 0;
 	};
 }
